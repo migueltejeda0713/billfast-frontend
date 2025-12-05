@@ -124,8 +124,10 @@ export default function Dashboard() {
     );
   }
 
-  const remaining = activeBudget.amount - spent;
-  const percentage = Math.min((spent / activeBudget.amount) * 100, 100);
+  const budgetAmount = activeBudget?.amount || 0;
+  const spentAmount = typeof spent === 'number' ? spent : 0;
+  const remaining = budgetAmount - spentAmount;
+  const percentage = budgetAmount > 0 ? Math.min((spentAmount / budgetAmount) * 100, 100) : 0;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 transition-colors duration-300">
@@ -168,11 +170,11 @@ export default function Dashboard() {
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="bg-white/10 rounded-xl p-3">
               <p className="text-xs text-blue-100 mb-1">Total</p>
-              <p className="font-bold text-lg">${activeBudget.amount.toFixed(0)}</p>
+              <p className="font-bold text-lg">${budgetAmount.toFixed(0)}</p>
             </div>
             <div className="bg-white/10 rounded-xl p-3">
               <p className="text-xs text-blue-100 mb-1">Gastado</p>
-              <p className="font-bold text-lg">${spent.toFixed(0)}</p>
+              <p className="font-bold text-lg">${spentAmount.toFixed(0)}</p>
             </div>
             <div className="bg-white/10 rounded-xl p-3">
               <p className="text-xs text-blue-100 mb-1">Restante</p>
