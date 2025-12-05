@@ -8,11 +8,11 @@ import { useOptimisticExpenses } from '../hooks/useOptimisticExpenses';
 import { API_URL, budgetAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { FaWallet, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaWallet, FaPlus } from 'react-icons/fa';
 
 export default function Dashboard() {
   const { token } = useAuth();
-  const [expenses, setExpensesRaw] = useOptimisticExpenses('gastos_temp') || [];
+  const [expenses] = useOptimisticExpenses('gastos_temp') || [];
   const [expensesState, setExpenses] = useState(expenses);
   const [spent, setSpent] = useState(0);
   const [activeBudget, setActiveBudget] = useState(null);
