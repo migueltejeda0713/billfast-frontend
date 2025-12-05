@@ -13,7 +13,7 @@ import { FaWallet, FaPlus } from 'react-icons/fa';
 export default function Dashboard() {
   const { token } = useAuth();
   const [expenses] = useOptimisticExpenses('gastos_temp') || [];
-  const [expensesState, setExpenses] = useState(expenses);
+  const [expensesState, setExpenses] = useState([]);
   const [spent, setSpent] = useState(0);
   const [activeBudget, setActiveBudget] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,9 @@ export default function Dashboard() {
   const [concept, setConcept] = useState('');
 
   useEffect(() => {
-    setExpenses(expenses);
+    if (Array.isArray(expenses)) {
+      setExpenses(expenses);
+    }
   }, [expenses]);
 
   const loadData = useCallback(async () => {
@@ -40,8 +42,9 @@ export default function Dashboard() {
       });
       if (resE.ok) {
         const dataE = await resE.json();
-        setExpenses(dataE);
-        setSpent(dataE.reduce((sum, e) => sum + e.amount, 0));
+        const validExpenses = Array.isArray(dataE) ? dataE : [];
+        setExpenses(validExpenses);
+        setSpent(validExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0));
       }
     } catch {
       setError('Error al cargar datos.');
@@ -227,29 +230,32 @@ export default function Dashboard() {
             </p>
           ) : (
             <div className="space-y-2">
-              {expensesState.slice().reverse().map((expense, idx) => (
-                <div
-                  key={expense.id || idx}
-                  className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-800 dark:text-gray-200">{expense.concept}</p>
-                    {expense.created_at && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {new Date(expense.created_at).toLocaleDateString('es-ES', {
-                          day: 'numeric',
-                          month: 'short',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </p>
-                    )}
+              {expensesState.slice().reverse().map((expense, idx) => {
+                const expenseAmount = Number(expense.amount) || 0;
+                return (
+                  <div
+                    key={expense.id || idx}
+                    className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-800 dark:text-gray-200">{expense.concept || 'Sin concepto'}</p>
+                      {expense.created_at && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {new Date(expense.created_at).toLocaleDateString('es-ES', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-blue-600 dark:text-blue-400">${expenseAmount.toFixed(2)}</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-blue-600 dark:text-blue-400">${expense.amount.toFixed(2)}</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
