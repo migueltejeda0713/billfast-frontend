@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL || 'https://billfast-backend.duckdns.org/';
+export const API_URL = process.env.REACT_APP_API_URL || 'https://billfast-backend.duckdns.org';
 
 // Budget API functions
 export const budgetAPI = {
