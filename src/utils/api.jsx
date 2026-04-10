@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL || 'http://51.210.245.223:5183';
+export const API_URL = process.env.REACT_APP_API_URL || 'http://qmed-backend-hcs6ny-04e65b-51-210-245-223.traefik.me';
 
 // Budget API functions
 export const budgetAPI = {
